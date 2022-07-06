@@ -63,7 +63,7 @@ with open("./data/data.csv", "r") as f:
 if __name__ == "__main__":
 	delta_rate = 0.001
 	delta_mse = -1
-	previous_mse = 0
+	last_mse = 0
 	theta0, theta1 = calculate_default_thetas(X, Y)
 
 	fig, ax = plt.subplots()
@@ -72,11 +72,11 @@ if __name__ == "__main__":
 	plt.ylabel("Prix de vente")
 
 	while abs(delta_mse) > 0.000000001:
-		previous_mse = calculate_mean_square_error(theta0, theta1, normalized_data)
+		last_mse = calculate_mean_square_error(theta0, theta1, normalized_data)
 		gradient = calculate_gradient(normalized_data, theta0, theta1)
 		theta0 = theta0 - delta_rate * gradient[0]
 		theta1 = theta1 - delta_rate * gradient[1]
-		delta_mse = previous_mse - calculate_mean_square_error(theta0, theta1, normalized_data)
+		delta_mse = last_mse - calculate_mean_square_error(theta0, theta1, normalized_data)
 
 	draw_points(ax, X, Y)
 	draw_thetas(ax, theta0, theta1)
