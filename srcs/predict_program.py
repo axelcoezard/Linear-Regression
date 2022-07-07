@@ -10,7 +10,5 @@ if __name__ == "__main__":
 		theta1 = float(theta1)
 		f.close()
 
-	print("theta0:", theta0)
-	print("theta1:", theta1)
-	value = float(input("input value: "))
-	print("value:", theta0 * value + theta1)
+	value = float(input("Nombre de kilometres au compteur de la voiture:\n"))
+	print("=> La voiture devrait pouvoir se vendre", round(theta0 * value + theta1, 2), "euros.")
