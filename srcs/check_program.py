@@ -1,3 +1,6 @@
+COLOR_GREEN = "\033[1;32m"
+COLOR_RESET = "\033[0m"
+
 def print_header():
 	print("""\033[1;32m█████████  █████                        █████
   ███░░░░░███░░███                        ░░███
@@ -39,13 +42,29 @@ if __name__ == "__main__":
 	theta0, theta1 = load_thetas()
 	X, Y = load_data()
 
+	print(COLOR_GREEN, "\nCalcul des erreurs:".ljust(25), COLOR_RESET, sep="")
+	errors = []
 	total_error = 0
+	error_max = 0
+	error_min = 100
 	for index, x in enumerate(X):
 		y1 = Y[index]
 		y2 = theta0 * x + theta1
 		error = abs(y1 - y2) * 100 / y1
 		print(str(index).ljust(3), "Δ(" + str(x).rjust(6) + ") =", str(round(error, 2)).rjust(5), "%")
+		if error > error_max: error_max = error
+		if error < error_min: error_min = error
+		errors.append(error)
 		total_error += error
 	avg_error = total_error / len(X)
-	print("\nMoyenne de l'erreur:", str(round(avg_error, 2)).rjust(5), "%")
 
+	print(COLOR_GREEN, "\nErreur minimale:".ljust(25), COLOR_RESET, str(round(error_min, 2)).rjust(5), " %", sep="")
+	print(COLOR_GREEN, "Erreur maximale:".ljust(25), COLOR_RESET, str(round(error_max, 2)).rjust(5), " %", sep="")
+	print(COLOR_GREEN, "Moyenne de l'erreur:".ljust(25), COLOR_RESET, str(round(avg_error, 2)).rjust(5), " %", sep="")
+
+	ecart_type = 0
+	for error in errors:
+		ecart_type += (error - avg_error) ** 2
+	ecart_type = (ecart_type / len(X)) ** .5
+	print(COLOR_GREEN, "Ecart-type de l'erreur:".ljust(25), COLOR_RESET, str(round(ecart_type, 2)).rjust(5), " %", sep="")
+	print(COLOR_GREEN, "\nPrecision:".ljust(25), COLOR_RESET, str(100 - round(ecart_type, 2)).rjust(5), " %", sep="")

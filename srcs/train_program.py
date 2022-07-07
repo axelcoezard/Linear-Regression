@@ -1,5 +1,10 @@
 import matplotlib.pyplot as plt
 import time
+import sys
+
+DEBUG_MODE = False
+if len(sys.argv) > 1 and (sys.argv[1] == '--debug' or sys.argv[1] == '-d'):
+	DEBUG_MODE = True
 
 def print_header():
 	print("""\033[1;32m███████████                      ███
@@ -10,7 +15,6 @@ def print_header():
     ░███     ░███      ███░░███  ░███  ░███ ░███ ░███░░░   ░███
     █████    █████    ░░████████ █████ ████ █████░░██████  █████
    ░░░░░    ░░░░░      ░░░░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░  ░░░░░\033[0m""")
-
 
 def calculate_default_thetas(x, y):
 	theta0 = (y[-1] - y[0]) / (x[-1] - x[0]) # a
@@ -102,28 +106,40 @@ if __name__ == "__main__":
 	print("Calculation des paramètres par défaut (theta0, theta1)...")
 	theta0, theta1 = calculate_default_thetas(X, Y)
 
-	fig, ax = plt.subplots()
-	plt.title("ft_linear_regression")
-	plt.xlabel("Kilometrage")
-	plt.ylabel("Prix de vente")
-
 	print("Regression lineaire via la methode des gradients...")
+	total_step = 0
 	while abs(delta_mse) > 0.000000001:
 		last_mse = calculate_mean_square_error(theta0, theta1, normalized_data)
 		gradient = calculate_gradient(normalized_data, theta0, theta1)
 		theta0 = theta0 - (1 / delta_rate) * gradient[0]
 		theta1 = theta1 - (1 / delta_rate) * gradient[1]
 		delta_mse = last_mse - calculate_mean_square_error(theta0, theta1, normalized_data)
+		if DEBUG_MODE and total_step % delta_rate == 0:
+			print("=> precision:", delta_mse, "| theta0:", round(theta0, 10), "| theta1:", round(theta1, 10))
+		total_step += 1
+
+	if (DEBUG_MODE):
+		print("=> nombre de pas:", total_step)
 
 	print("Calcul des paramètres réels...")
 	real_theta0, real_theta1 = denormalize_thetas(theta0, theta1, sorted_data)
+	if (DEBUG_MODE):
+		print("=> theta0 = " + str(real_theta0))
+		print("=> theta1 = " + str(real_theta1))
+
+	fig, ax = plt.subplots()
+	plt.suptitle("ft_linear_regression", fontsize=18)
+	plt.title("f(x)=" + str(round(real_theta0, 4)) + "x+" + str(round(real_theta1, 2)), fontsize=10)
+	plt.xlabel("Kilometrage")
+	plt.ylabel("Prix de vente")
 
 	print("Sauvegarde des paramètres...")
 	save_data("./data/thetas.csv", [real_theta0, real_theta1])
 
-	print("Dessin des points...")
+	print("Affichage de la fenetre...")
 	draw_points(ax, sorted_X, sorted_Y)
-
-	print("Dessin de la droite de regression...")
 	draw_thetas(ax, real_theta0, real_theta1, sorted_data)
+
+	ax.set_ylim(bottom=0)
+	ax.set_xlim(left=0)
 	plt.show()
