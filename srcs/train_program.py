@@ -2,17 +2,14 @@ import matplotlib.pyplot as plt
 import time
 
 def print_header():
-	print("""\033[1;32m███████████                      ███              ███
-░█░░░███░░░█                     ░░░              ░░░
-░   ░███  ░  ████████   ██████   ████  ████████   ████  ████████    ███████
-    ░███    ░░███░░███ ░░░░░███ ░░███ ░░███░░███ ░░███ ░░███░░███  ███░░███
-    ░███     ░███ ░░░   ███████  ░███  ░███ ░███  ░███  ░███ ░███ ░███ ░███
-    ░███     ░███      ███░░███  ░███  ░███ ░███  ░███  ░███ ░███ ░███ ░███
-    █████    █████    ░░████████ █████ ████ █████ █████ ████ █████░░███████
-   ░░░░░    ░░░░░      ░░░░░░░░ ░░░░░ ░░░░ ░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░███
-                                                                   ███ ░███
-                                                                  ░░██████
-                                                                   ░░░░░░\033[0m""")
+	print("""\033[1;32m███████████                      ███
+░█░░░███░░░█                     ░░░
+░   ░███  ░  ████████   ██████   ████  ████████    ██████  ████████
+    ░███    ░░███░░███ ░░░░░███ ░░███ ░░███░░███  ███░░███░░███░░███
+    ░███     ░███ ░░░   ███████  ░███  ░███ ░███ ░███████  ░███ ░░░
+    ░███     ░███      ███░░███  ░███  ░███ ░███ ░███░░░   ░███
+    █████    █████    ░░████████ █████ ████ █████░░██████  █████
+   ░░░░░    ░░░░░      ░░░░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░  ░░░░░\033[0m""")
 
 
 def calculate_default_thetas(x, y):
@@ -93,13 +90,16 @@ def save_data(filename, thetas):
 if __name__ == "__main__":
 	print_header()
 
-	delta_rate = 1000000
+	delta_rate = 100000
 	delta_mse = -1
 	last_mse = 0
 
+	print("Chargement et normalisation des données...")
 	sorted_data, normalized_data = read_data("./data/data.csv")
 	sorted_X, sorted_Y = get_data_to_X_Y(sorted_data)
 	X, Y = get_data_to_X_Y(normalized_data)
+
+	print("Calculation des paramètres par défaut (theta0, theta1)...")
 	theta0, theta1 = calculate_default_thetas(X, Y)
 
 	fig, ax = plt.subplots()
@@ -107,6 +107,7 @@ if __name__ == "__main__":
 	plt.xlabel("Kilometrage")
 	plt.ylabel("Prix de vente")
 
+	print("Regression lineaire via la methode des gradients...")
 	while abs(delta_mse) > 0.000000001:
 		last_mse = calculate_mean_square_error(theta0, theta1, normalized_data)
 		gradient = calculate_gradient(normalized_data, theta0, theta1)
@@ -114,9 +115,15 @@ if __name__ == "__main__":
 		theta1 = theta1 - (1 / delta_rate) * gradient[1]
 		delta_mse = last_mse - calculate_mean_square_error(theta0, theta1, normalized_data)
 
+	print("Calcul des paramètres réels...")
 	real_theta0, real_theta1 = denormalize_thetas(theta0, theta1, sorted_data)
+
+	print("Sauvegarde des paramètres...")
 	save_data("./data/thetas.csv", [real_theta0, real_theta1])
 
+	print("Dessin des points...")
 	draw_points(ax, sorted_X, sorted_Y)
+
+	print("Dessin de la droite de regression...")
 	draw_thetas(ax, real_theta0, real_theta1, sorted_data)
 	plt.show()
