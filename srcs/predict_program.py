@@ -20,5 +20,8 @@ if __name__ == "__main__":
 		theta1 = float(theta1)
 		f.close()
 
-	value = float(input("Nombre de kilometres au compteur de la voiture:\n"))
-	print("=> La voiture devrait pouvoir se vendre", round(theta0 * value + theta1, 2), "euros.")
+	try:
+		value = float(input("Nombre de kilometres au compteur de la voiture:\n"))
+		print("=> La voiture devrait pouvoir se vendre", round(theta0 * value + theta1, 2), "euros.")
+	except ValueError:
+		print("=> Erreur: le nombre de kilometres doit être un nombre.")
