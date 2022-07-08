@@ -15,25 +15,33 @@ def load_thetas():
 	theta0 = 0
 	theta1 = 0
 
-	with open("./data/thetas.csv", "r") as f:
-		f.readline()
-		theta0, theta1 = f.readline().split(",")
-		theta0 = float(theta0)
-		theta1 = float(theta1)
-		f.close()
+	try:
+		with open("./data/thetas.csv", "r") as f:
+			f.readline()
+			theta0, theta1 = f.readline().split(",")
+			theta0 = float(theta0)
+			theta1 = float(theta1)
+			f.close()
+	except FileNotFoundError:
+		print("Pas de fichier thetas.csv!")
+		exit(1)
 
 	return theta0, theta1
 
 def load_data():
 	X = []
 	Y = []
-	with open("./data/data.csv", "r") as f:
-		f.readline()
-		for line in f:
-			x, y = line.split(",")
-			X.append(int(x))
-			Y.append(int(y))
-		f.close()
+	try:
+		with open("./data/data.csv", "r") as f:
+			f.readline()
+			for line in f:
+				x, y = line.split(",")
+				X.append(int(x))
+				Y.append(int(y))
+			f.close()
+	except FileNotFoundError:
+		print("Pas de fichier data.csv!")
+		exit(1)
 	return X, Y
 
 if __name__ == "__main__":
