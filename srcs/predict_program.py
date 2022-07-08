@@ -13,12 +13,15 @@ if __name__ == "__main__":
 	theta0 = 0
 	theta1 = 0
 
-	with open("./data/thetas.csv", "r") as f:
-		f.readline()
-		theta0, theta1 = f.readline().split(",")
-		theta0 = float(theta0)
-		theta1 = float(theta1)
-		f.close()
+	try:
+		with open("./data/thetas.csv", "r") as f:
+			f.readline()
+			theta0, theta1 = f.readline().split(",")
+			theta0 = float(theta0)
+			theta1 = float(theta1)
+			f.close()
+	except FileNotFoundError:
+		print("Pas de fichier thetas.csv!")
 
 	try:
 		value = float(input("Nombre de kilometres au compteur de la voiture:\n"))
