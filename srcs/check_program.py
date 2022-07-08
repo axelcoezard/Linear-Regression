@@ -67,4 +67,4 @@ if __name__ == "__main__":
 		ecart_type += (error - avg_error) ** 2
 	ecart_type = (ecart_type / len(X)) ** .5
 	print(COLOR_GREEN, "Ecart-type de l'erreur:".ljust(25), COLOR_RESET, str(round(ecart_type, 2)).rjust(5), " %", sep="")
-	print(COLOR_GREEN, "\nPrecision:".ljust(25), COLOR_RESET, str(100 - round(ecart_type, 2)).rjust(5), " %", sep="")
+	print(COLOR_GREEN, "\nPrecision:".ljust(25), COLOR_RESET, str(100 - round(avg_error, 2)).rjust(5), " %", sep="")
